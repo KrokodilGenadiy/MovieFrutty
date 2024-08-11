@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.moviefrutty.core.ui.BottomNavigation
+import androidx.navigation.compose.rememberNavController
+import com.example.moviefrutty.core.ui.BottomNavigationBar
+import com.example.moviefrutty.core.ui.NavigationHost
 import com.example.moviefrutty.ui.theme.MovieFruttyTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,12 +22,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MovieFruttyTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigation() }) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
+                    NavigationHost(navController)
                 }
             }
         }

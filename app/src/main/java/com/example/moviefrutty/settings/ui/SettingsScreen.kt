@@ -1,4 +1,4 @@
-package com.example.moviefrutty.home.ui
+package com.example.moviefrutty.settings.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import com.example.moviefrutty.Greeting
 
 @Composable
-fun HomeScreen() {
+fun SettingsScreen() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Greeting(
-            name = "Home screen",
+            name = "Settings screen",
             modifier = Modifier.padding(innerPadding)
         )
     }
