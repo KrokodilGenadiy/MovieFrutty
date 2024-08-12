@@ -18,7 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -37,18 +40,18 @@ fun BottomNavigationBar(navController: NavController) {
     }
     NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(selected = currentRoute == item.route,
+        val currentDestination = navBackStackEntry?.destination
+        items.forEach{ item ->
+            NavigationBarItem(selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                 onClick = {
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
                     }},
-                label = { Text(text = item.label) },
+                label = { Text(fontSize =11.sp, maxLines = 1, text = item.label) },
                 icon = {
                     Icon(
-                        imageVector = if (index == selectedItemIndex)
+                        imageVector = if (currentDestination?.hierarchy?.any { it.route == item.route } == true)
                             item.selectedIcon
                         else
                             item.unselectedIcon,

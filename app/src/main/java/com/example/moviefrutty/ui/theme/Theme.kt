@@ -14,13 +14,27 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = Orange,
     secondary = Blue,
-    tertiary = LightGrey
+    tertiary = LightGrey,
+    background = Grey,
+    surface = LightBlue,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = LightGrey,
+    onSurface = LightGrey,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Orange,
     secondary = Blue,
-    tertiary = LightGrey
+    tertiary = LightGrey,
+    background = Grey,
+    surface = LightBlue,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = LightGrey,
+    onSurface = LightGrey,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -56,3 +70,4 @@ fun MovieFruttyTheme(
         content = content
     )
 }
+
