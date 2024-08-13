@@ -48,7 +48,7 @@ fun BottomNavigationBar(navController: NavController) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
                     }},
-                label = { Text(fontSize =11.sp, maxLines = 1, text = item.label) },
+                label = { Text(fontSize = 10.sp, maxLines = 1, text = item.label) },
                 icon = {
                     Icon(
                         imageVector = if (currentDestination?.hierarchy?.any { it.route == item.route } == true)

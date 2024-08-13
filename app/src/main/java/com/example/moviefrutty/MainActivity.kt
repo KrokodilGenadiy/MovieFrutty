@@ -15,7 +15,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moviefrutty.core.ui.BottomNavigationBar
 import com.example.moviefrutty.core.ui.NavigationHost
 import com.example.moviefrutty.ui.theme.MovieFruttyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

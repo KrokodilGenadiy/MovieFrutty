@@ -33,7 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +43,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.moviefrutty.R
+import com.example.moviefrutty.core.data.api.ApiConstants
 import com.example.moviefrutty.home.data.Movie
 import com.example.moviefrutty.ui.theme.MovieFruttyTheme
 
@@ -51,6 +56,7 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     title: String,
     description: String,
+    poster: String,
     onClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
@@ -66,9 +72,14 @@ fun MovieCard(
             }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(id = R.drawable.movie_test),
-                contentDescription = "Movie image",
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(ApiConstants.IMAGES_URL + "w780" + poster)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.movie_placeholder),
+                contentDescription = stringResource(R.string.poster),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -80,12 +91,12 @@ fun MovieCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(text = "Title",
+                Text(text = title,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold)
                 Text(
-                    text = "Just in case someone wonders: the method presented here will work IF you have ever had that commit IN your local machine (either you commit in the local repository or fetch the change). If you want to restore a commit someone else has pushed & deleted on GitHub / GitLab server, take a look at the API of GitHub, there will be API to help create a branch from the old commit",
+                    text = description,
                     style = MaterialTheme.typography.bodyMedium,
                     fontSize = 12.sp,
                     overflow = TextOverflow.Ellipsis)
@@ -104,6 +115,7 @@ fun MovieCardPreview() {
                 .height(250.dp),
             "title",
             "description",
+            "string",
             onClick = {}
         )
     }
