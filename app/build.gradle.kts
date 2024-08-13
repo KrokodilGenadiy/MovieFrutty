@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.parcelize)
 }
 
 android {
@@ -19,7 +22,15 @@ android {
             useSupportLibrary = true
         }
     }
-
+    packaging {
+        resources.excludes.addAll(
+            listOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+                "META-INF/gradle/incremental.annotation.processors"
+            )
+        )
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,9 +49,10 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
     packaging {
         resources {
@@ -67,4 +79,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Hilt
+    implementation(libs.hilt)
+    implementation(libs.hiltCompiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hiltCompiler)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+
+    //Coil
+    implementation(libs.coil.compose)
 }

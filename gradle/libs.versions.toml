@@ -1,17 +1,29 @@
 [versions]
-agp = "8.5.1"
-kotlin = "1.9.0"
+agp = "8.5.2"
+coilCompose = "2.7.0"
+hiltNavigationCompose = "1.2.0"
+kotlin = "1.9.23"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.04.01"
+composeBom = "2024.06.00"
 navigationCompose = "2.7.7"
+hiltVersion = "2.48"
+hiltCompilerVersion = "2.48"
+ksp = "1.9.20-1.0.14"
+retrofit = "2.9.0"
+gson = "2.9.0"
+okhttp = "4.12.0"
+loggingInterceptor = "4.12.0"
+parcelize = "1.6.10"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -26,8 +38,15 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-
+hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
+hiltCompiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltCompilerVersion" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
+parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "parcelize" }
