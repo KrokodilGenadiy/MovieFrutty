@@ -22,7 +22,7 @@ class HomeScreenRepositoryImpl(
     private val preferences: PreferenceProvider,
     private val context: Context
 ) : HomeScreenRepository {
-    override suspend fun getFilmsFromApi(page: Int): Flow<Resource<List<Movie>, DataError.Network>> =
+    override suspend fun getMoviesFromApi(page: Int, query: String): Flow<Resource<List<Movie>, DataError.Network>> =
         flow<Resource<List<Movie>, DataError.Network>> {
 
             if (!isOnline(context)) {
@@ -30,10 +30,19 @@ class HomeScreenRepositoryImpl(
             } else {
                 var movies = emptyList<Movie>()
                 try {
-                    movies = retrofitService.getFilms(
-                        getDefaultCategoryFromPreferences(),
-                        API.KEY, Locale.getDefault().toLanguageTag(), page
-                    ).tmdbFilms
+                    movies = if (query.isEmpty()) {
+                        retrofitService.getFilms(
+                            getDefaultCategoryFromPreferences(),
+                            API.KEY, Locale.getDefault().toLanguageTag(), page
+                        ).tmdbFilms
+                    } else {
+                        retrofitService.getFilmFromSearch(
+                            API.KEY,
+                            Locale.getDefault().toLanguageTag(),
+                            query,
+                            page
+                        ).tmdbFilms
+                    }
                 } catch (e: Exception) {
                     when (e) {
                         is HttpException -> {
@@ -51,40 +60,6 @@ class HomeScreenRepositoryImpl(
                 }
                 emit(Resource.Success(movies))
             }
-        }.flowOn(Dispatchers.IO)
-
-    override suspend fun getFilmsByQuery(
-        query: String,
-        page: Int
-    ): Flow<Resource<List<Movie>, DataError.Network>> =
-        flow<Resource<List<Movie>, DataError.Network>> {
-            if (!isOnline(context)) {
-                emit(Resource.Error(DataError.Network.NO_INTERNET))
-            }
-            var movies = emptyList<Movie>()
-            try {
-                movies = retrofitService.getFilmFromSearch(
-                    API.KEY,
-                    Locale.getDefault().toLanguageTag(),
-                    query,
-                    page
-                ).tmdbFilms
-            } catch (e: Exception) {
-                when (e) {
-                    is HttpException -> {
-                        when (e.code()) {
-                            404 -> emit(Resource.Error(DataError.Network.NOT_FOUND))
-                            408 -> emit(Resource.Error(DataError.Network.REQUEST_TIMEOUT))
-                            413 -> emit(Resource.Error(DataError.Network.PAYLOAD_TOO_LARGE))
-                            else -> emit(Resource.Error(DataError.Network.UNKNOWN))
-                        }
-                    }
-                    is IOException -> {
-                        emit(Resource.Error(DataError.Network.UNKNOWN))
-                    }
-                }
-            }
-            emit(Resource.Success(movies))
         }.flowOn(Dispatchers.IO)
 
     override fun saveDefaultCategoryToPreferences(category: String) {

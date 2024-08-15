@@ -47,12 +47,12 @@ class HomeScreenViewModel @Inject constructor(private val interactor: HomeScreen
     val movies = searchQuery
         .debounce(1000L)
         .onEach { _isSearching.update { true } }
-        .combine(_movies) { text, movies ->
-            if (text.isBlank()) {
-                loadFilmsFromApi(1)
+        .combine(_movies) { query, movies ->
+            if (query.isBlank()) {
+                searchMovies(1,"")
                 movies
             } else {
-                searchMovies(text,1)
+                searchMovies(1,query)
                 movies
             }
         }
@@ -63,29 +63,11 @@ class HomeScreenViewModel @Inject constructor(private val interactor: HomeScreen
             _movies.value
         )
 
-    private fun loadFilmsFromApi(page: Int) {
+
+    private fun searchMovies( page: Int, query: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                interactor.getFilmsFromApi(page).collect { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            _movies.value = result.data
-                        }
-                        is Resource.Error -> {
-                            val errorMessage = result.error.asUiText()
-                            eventChannel.send(MoviesEvent.Error(errorMessage))
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
-    private fun searchMovies(query: String, page: Int) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                interactor.getFilmsByQuery(query,page).collect { result ->
+                interactor.getMoviesFromApi(page,query).collect { result ->
                     when (result) {
                         is Resource.Success -> {
                             _movies.value = result.data

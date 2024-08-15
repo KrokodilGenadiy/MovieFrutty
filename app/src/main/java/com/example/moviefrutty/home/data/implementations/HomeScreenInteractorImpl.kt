@@ -9,13 +9,11 @@ import kotlinx.coroutines.flow.Flow
 
 class HomeScreenInteractorImpl(private val repository: HomeScreenRepository) :
     HomeScreenInteractor {
-    override suspend fun getFilmsFromApi(page: Int): Flow<Resource<List<Movie>, DataError.Network>> =
-        repository.getFilmsFromApi(page)
 
-    override suspend fun getFilmsByQuery(
+    override suspend fun getMoviesFromApi(
         query: String,
         page: Int
-    ): Flow<Resource<List<Movie>, DataError.Network>> = repository.getFilmsByQuery(query, page)
+    ): Flow<Resource<List<Movie>, DataError.Network>> = repository.getMoviesFromApi(page, query)
 
     override fun saveDefaultCategoryToPreferences(category: String) {
         repository.saveDefaultCategoryToPreferences(category)

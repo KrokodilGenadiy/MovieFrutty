@@ -6,8 +6,10 @@ import com.example.moviefrutty.home.data.entity.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface HomeScreenInteractor {
-    suspend fun getFilmsFromApi(page: Int): Flow<Resource<List<Movie>, DataError.Network>>
-    suspend fun getFilmsByQuery(query: String, page: Int): Flow<Resource<List<Movie>, DataError.Network>>
+    suspend fun getMoviesFromApi(
+        query: String,
+        page: Int
+    ): Flow<Resource<List<Movie>, DataError.Network>>
     fun saveDefaultCategoryToPreferences(category: String)
     fun getDefaultCategoryFromPreferences(): String
 }
