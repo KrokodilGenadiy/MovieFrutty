@@ -2,7 +2,7 @@ package com.example.moviefrutty.home.data.implementations
 
 import com.example.moviefrutty.core.util.Resource
 import com.example.moviefrutty.core.util.error_handling.DataError
-import com.example.moviefrutty.home.data.Movie
+import com.example.moviefrutty.home.data.entity.Movie
 import com.example.moviefrutty.home.domain.interactors.HomeScreenInteractor
 import com.example.moviefrutty.home.domain.repositories.HomeScreenRepository
 import kotlinx.coroutines.flow.Flow

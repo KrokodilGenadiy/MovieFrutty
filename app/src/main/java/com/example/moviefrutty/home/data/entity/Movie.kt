@@ -1,4 +1,4 @@
-package com.example.moviefrutty.home.data
+package com.example.moviefrutty.home.data.entity
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -23,7 +23,7 @@ val overview: String,
 @SerializedName("popularity")
 val popularity: Double,
 @SerializedName("poster_path")
-val posterPath: String,
+val posterPath: String?,
 @SerializedName("release_date")
 val releaseDate: String,
 @SerializedName("title")

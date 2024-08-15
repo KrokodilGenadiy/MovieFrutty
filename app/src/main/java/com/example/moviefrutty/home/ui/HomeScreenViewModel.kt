@@ -4,41 +4,72 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviefrutty.core.util.Resource
 import com.example.moviefrutty.core.util.asUiText
-import com.example.moviefrutty.core.util.error_handling.DataError
-import com.example.moviefrutty.home.data.Movie
+import com.example.moviefrutty.home.data.entity.Movie
 import com.example.moviefrutty.home.domain.events.MoviesEvent
-import com.example.moviefrutty.home.domain.interactors.HomeScreenInteractor
 import com.example.moviefrutty.home.domain.repositories.HomeScreenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(private val interactor: HomeScreenRepository) :
     ViewModel() {
-    private val _moviesFlow = MutableStateFlow<List<Movie>>(emptyList())
-    val moviesFlow: StateFlow<List<Movie>> = _moviesFlow.asStateFlow()
 
     private val eventChannel = Channel<MoviesEvent.Error>()
     val events = eventChannel.receiveAsFlow()
 
-    fun loadFilmsFromApi(page: Int) {
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    fun onSearchTextChange(query: String) {
+        _searchQuery.value = query
+    }
+
+    private val _movies = MutableStateFlow(emptyList<Movie>())
+
+    val movies = searchQuery
+        .debounce(1000L)
+        .onEach { _isSearching.update { true } }
+        .combine(_movies) { text, movies ->
+            if (text.isBlank()) {
+                loadFilmsFromApi(1)
+                movies
+            } else {
+                searchMovies(text,1)
+                movies
+            }
+        }
+        .onEach { _isSearching.update { false } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _movies.value
+        )
+
+    private fun loadFilmsFromApi(page: Int) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 interactor.getFilmsFromApi(page).collect { result ->
                     when (result) {
                         is Resource.Success -> {
-                            _moviesFlow.value = result.data
+                            _movies.value = result.data
                         }
                         is Resource.Error -> {
                             val errorMessage = result.error.asUiText()
@@ -48,6 +79,24 @@ class HomeScreenViewModel @Inject constructor(private val interactor: HomeScreen
                 }
             }
 
+        }
+    }
+
+    private fun searchMovies(query: String, page: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                interactor.getFilmsByQuery(query,page).collect { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            _movies.value = result.data
+                        }
+                        is Resource.Error -> {
+                            val errorMessage = result.error.asUiText()
+                            eventChannel.send(MoviesEvent.Error(errorMessage))
+                        }
+                    }
+                }
+            }
         }
     }
 }

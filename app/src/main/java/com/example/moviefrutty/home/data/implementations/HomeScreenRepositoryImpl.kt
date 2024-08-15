@@ -7,7 +7,7 @@ import com.example.moviefrutty.core.util.PreferenceProvider
 import com.example.moviefrutty.core.util.Resource
 import com.example.moviefrutty.core.util.error_handling.DataError
 import com.example.moviefrutty.core.util.error_handling.NetworkHelper.isOnline
-import com.example.moviefrutty.home.data.Movie
+import com.example.moviefrutty.home.data.entity.Movie
 import com.example.moviefrutty.home.domain.repositories.HomeScreenRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,29 +27,30 @@ class HomeScreenRepositoryImpl(
 
             if (!isOnline(context)) {
                 emit(Resource.Error(DataError.Network.NO_INTERNET))
-            }
-            var movies = emptyList<Movie>()
-            try {
-                movies = retrofitService.getFilms(
-                    getDefaultCategoryFromPreferences(),
-                    API.KEY, Locale.getDefault().toLanguageTag(), page
-                ).tmdbFilms
-            } catch (e: Exception) {
-                when (e) {
-                    is HttpException -> {
-                        when (e.code()) {
-                            404 -> emit(Resource.Error(DataError.Network.NOT_FOUND))
-                            408 -> emit(Resource.Error(DataError.Network.REQUEST_TIMEOUT))
-                            413 -> emit(Resource.Error(DataError.Network.PAYLOAD_TOO_LARGE))
-                            else -> emit(Resource.Error(DataError.Network.UNKNOWN))
+            } else {
+                var movies = emptyList<Movie>()
+                try {
+                    movies = retrofitService.getFilms(
+                        getDefaultCategoryFromPreferences(),
+                        API.KEY, Locale.getDefault().toLanguageTag(), page
+                    ).tmdbFilms
+                } catch (e: Exception) {
+                    when (e) {
+                        is HttpException -> {
+                            when (e.code()) {
+                                404 -> emit(Resource.Error(DataError.Network.NOT_FOUND))
+                                408 -> emit(Resource.Error(DataError.Network.REQUEST_TIMEOUT))
+                                413 -> emit(Resource.Error(DataError.Network.PAYLOAD_TOO_LARGE))
+                                else -> emit(Resource.Error(DataError.Network.UNKNOWN))
+                            }
+                        }
+                        is IOException -> {
+                            emit(Resource.Error(DataError.Network.UNKNOWN))
                         }
                     }
-                    is IOException -> {
-                        emit(Resource.Error(DataError.Network.UNKNOWN))
-                    }
                 }
+                emit(Resource.Success(movies))
             }
-            emit(Resource.Success(movies))
         }.flowOn(Dispatchers.IO)
 
     override suspend fun getFilmsByQuery(

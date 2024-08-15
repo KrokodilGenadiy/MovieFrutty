@@ -1,6 +1,5 @@
 package com.example.moviefrutty.home.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,15 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +30,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,7 +40,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.moviefrutty.R
 import com.example.moviefrutty.core.data.api.ApiConstants
-import com.example.moviefrutty.home.data.Movie
 import com.example.moviefrutty.ui.theme.MovieFruttyTheme
 
 
@@ -56,7 +48,7 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     title: String,
     description: String,
-    poster: String,
+    poster: String?,
     onClick: () -> Unit
 ) {
     var isFavorite by remember { mutableStateOf(false) }
@@ -64,7 +56,7 @@ fun MovieCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .height(300.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .clickable {

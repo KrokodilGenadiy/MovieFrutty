@@ -1,6 +1,6 @@
 package com.example.moviefrutty.core.data.api
 
-import com.example.moviefrutty.home.data.Movie
+import com.example.moviefrutty.home.data.entity.Movie
 import com.google.gson.annotations.SerializedName
 
 data class MovieSearchResult(

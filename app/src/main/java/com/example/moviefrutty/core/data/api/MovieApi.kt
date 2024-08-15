@@ -1,8 +1,5 @@
 package com.example.moviefrutty.core.data.api
 
-import com.example.moviefrutty.core.util.Resource
-import com.example.moviefrutty.core.util.error_handling.DataError
-import com.example.moviefrutty.home.data.Movie
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
